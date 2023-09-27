@@ -1,0 +1,38 @@
+DOCKER SWARM ALLOWS MANAGING MULTIPLE CONTAINERS ON MULTIPLE SERVERS
+
+MANAGER NODE
+WOKER NODE
+SERVICE = TASK TO
+    LAUNCHES NODES
+    GLOBAL ATLEAST ONE NODE 
+
+STACK SERVICES DEPLOYED TOGETHER
+
+
+---- INSTALL DOCKER MACHINE -------
+
+LINK:
+    https://gdevillele.github.io/machine/install-machine/
+    https://www.digitalocean.com/community/tutorials/how-to-provision-and-manage-remote-docker-hosts-with-docker-machine-on-ubuntu-18-04 
+
+sudo su
+curl -L https://github.com/docker/machine/releases/download/v0.8.2/docker-machine-`uname -s`-`uname -m` >/usr/local/bin/docker-machine
+chmod +x /usr/local/bin/docker-machine
+VERIFY 
+     docker-machine
+
+
+----- CREATING DOCKER MANAGER NODES -----
+https://phoenixnap.com/kb/install-virtualbox-on-ubuntu 
+
+ docker-machine create --driver=virtualbox manager1
+ mfadhili@mfadhili-HP-ProBook-440-G5:~/Desktop/Dev/BlockChain/multihost$ docker-machine create --driver virtualbox worker1
+
+
+---- CREATE SWARM CLUSTER ------
+
+ ----- LOG IN TO DOCKER MACHINE MANAGER ------
+
+ docker-machine ssh <nodename>
+
+ https://docs.docker.com/get-started/swarm-deploy/ 

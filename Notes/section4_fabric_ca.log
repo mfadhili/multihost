@@ -1,0 +1,41 @@
+================= CHECK NETWORK ===================
+docker node ls
+
+root@ubuntu-1:~# docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+u06t7xbdr3hc0whaxrv2j5a0f *   ubuntu-1   Ready     Active         Leader           24.0.6
+2k3nclhlj2w337wzn6rsvsor9     ubuntu-2   Ready     Active                          24.0.6
+0nmrsrkbl94uxfe6y0s3pa5j4     ubuntu-3   Ready     Active                          24.0.6
+root@ubuntu-1:~# 
+
+
+============= CREATING OVERLAY NETWORK ===================
+docker network create --driver=overlay --attachable test
+
+docker network ls
+
+root@ubuntu-1:~# docker network create --driver=overlay --attachable test
+sx0zb6k4pjhz9jxyt3h5u279x
+root@ubuntu-1:~# 
+
+root@ubuntu-1:~# docker network create --driver=overlay --attachable test
+sx0zb6k4pjhz9jxyt3h5u279x
+root@ubuntu-1:~# docker network ls
+NETWORK ID     NAME                      DRIVER    SCOPE
+dc0d40eef3fa   bridge                    bridge    local
+2ac1baca25f5   docker_gwbridge           bridge    local
+87bff20f281f   host                      host      local
+2mkixg3cl5pe   ingress                   overlay   swarm
+277af414198b   none                      null      local
+n3p3dpmub5l8   portainer_agent_network   overlay   swarm
+sx0zb6k4pjhz   test                      overlay   swarm
+root@ubuntu-1:~# 
+
+
+==================================
+
+DOCKER COMPOSE FILE
+    PLACEMENT CONSTRAINTS TO ENSIRE THAT CONTAINERS ARE ON SPECIFIC NODES
+    PATH TO CONFIG
+    ALIASES
+    

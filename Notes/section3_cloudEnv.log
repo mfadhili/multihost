@@ -1,0 +1,97 @@
+
+
+----- CREATE EC2 INSTANCES ------
+
+ubuntu-1
+ssh root@159.223.177.165
+10.116.0.2
+
+
+ubuntu-2
+ssh root@24.199.80.218
+10.116.0.3
+
+ubuntu-3
+ssh root@159.223.177.166
+10.116.0.4
+
+qwert5Yu
+
+
+----------- INSTALL DOCKER -------------
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt-cache policy docker-ce
+sudo apt install docker-ce -y
+sudo systemctl status docker
+
+sudo usermod -aG docker ${USER}
+su - ${USER}
+groups
+
+docker version
+
+---- SETTING UP DOCKER SWARM ------------------
+ 
+ --- ON MANAGER NODE ------
+docker swarm init --advertise-addr 10.116.0.2
+
+root@ubuntu-1:~# docker swarm init --advertise-addr 10.116.0.2
+Swarm initialized: current node (u06t7xbdr3hc0whaxrv2j5a0f) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-4esn7m130q90qe440lhubsk2tlg0rhdoi3oxusla5cxf2qk9gw-b6tpn19v6flpg8m26at28shtx 10.116.0.2:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+root@ubuntu-1:~# 
+
+
+------ ON WORKER NODES
+root@ubuntu-3:~# docker swarm join --token SWMTKN-1-4esn7m130q90qe440lhubsk2tlg0rhdoi3oxusla5cxf2qk9gw-b6tpn19v6flpg8m26at28shtx 10.116.0.2:2377
+This node joined a swarm as a worker.
+root@ubuntu-3:~# 
+
+root@ubuntu-2:~# docker swarm join --token SWMTKN-1-4esn7m130q90qe440lhubsk2tlg0rhdoi3oxusla5cxf2qk9gw-b6tpn19v6flpg8m26at28shtx 10.116.0.2:2377
+This node joined a swarm as a worker.
+root@ubuntu-2:~# 
+
+root@ubuntu-1:~# docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+u06t7xbdr3hc0whaxrv2j5a0f *   ubuntu-1   Ready     Active         Leader           24.0.6
+2k3nclhlj2w337wzn6rsvsor9     ubuntu-2   Ready     Active                          24.0.6
+0nmrsrkbl94uxfe6y0s3pa5j4     ubuntu-3   Ready     Active                          24.0.6
+root@ubuntu-1:~# 
+
+
+------ TEST NGINX APP
+
+docker service create --name web --publish 80:80 --replicas 3 nginx
+
+root@ubuntu-1:~# docker service create --name web --publish 80:80 --replicas 3 nginx
+3x9t9p1c6dpqlk3vvsl1kiiqd
+overall progress: 3 out of 3 tasks 
+1/3: running   
+2/3: running   
+3/3: running   
+verify: Service converged 
+root@ubuntu-1:~# docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE          PORTS
+3x9t9p1c6dpq   web       replicated   3/3        nginx:latest   *:80->80/tcp
+root@ubuntu-1:~# 
+
+
+docker ps 
+check on browser
+    159.223.177.165:80
+
+------------ DEPLOY PORTAINER 
+curl -L https://downloads.portainer.io/ce2-19/portainer-agent-stack.yml -o portainer-agent-stack.yml
+docker stack deploy -c portainer-agent-stack.yml portainer
+
+
+159.223.177.165:9000
+admin/admin123admin123
